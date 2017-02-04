@@ -1,0 +1,19 @@
+page-lista-estabelecimentos {
+    ion-item{
+        .titulo{
+            font-size: 120%;
+        }
+        .descricao{
+            font-weight: 200;
+        }
+    }
+
+    .center-spinner {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center; 
+        height: 100%;
+        padding-bottom: 4em; 
+    }
+}
