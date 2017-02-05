@@ -7,8 +7,8 @@
       </div>
       <a menuClose>
         <div *ngIf="user && !loading">
-          <img *ngIf="user" class="profile-picture" [src]="user.imagem">
-          <h4 light >|{{user.nome}}</h4>
+          <img *ngIf="user" class="profile-picture" [src]="user.photoURL">
+          <h4 light >{{user.displayName}}</h4>
           <hr>
           <ion-list class="list-full-border" *ngIf="user">
             <button class="item-menu" ion-item menuClose clear (click)="goToSorteios()" >
@@ -21,7 +21,7 @@
         </div>
         <div>
           <ion-grid *ngIf="!user && !loading">
-            <h4 light >Faça login para participar dos sorteios!</h4>
+            <h4 light >Faça login para participar dos sorteios</h4>
             <ion-row>
               <ion-col width-100 ><button style="background-color: #3b5997" ion-button full (click)="loginWithFacebook()" ><ion-icon name="logo-facebook"></ion-icon>&nbsp;&nbsp;Login com Facebook</button></ion-col>
             </ion-row>

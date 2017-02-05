@@ -1,3 +1,4 @@
+import { ModalLoginPage } from './../pages/modal-login/modal-login';
 import { SorteiosRealizadosPage } from './../pages/sorteios-realizados/sorteios-realizados';
 import { SorteiosPendentesPage } from './../pages/sorteios-pendentes/sorteios-pendentes';
 import { SorteioModalPage } from './../pages/sorteio-modal/sorteio-modal';
@@ -10,7 +11,7 @@ import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
-import { AngularFireModule, AuthProviders, AuthMethods } from 'angularfire2';
+import { AngularFireModule } from 'angularfire2';
 
 const config = {
     apiKey: "AIzaSyA3MLge8e6_dGgcYjs8L4MAEeWVTT-QSjE",
@@ -32,6 +33,7 @@ const config = {
     SorteioModalPage,
     SorteiosPendentesPage,
     SorteiosRealizadosPage,
+    ModalLoginPage,
     ParallaxHeader
   ],
   imports: [
@@ -47,10 +49,10 @@ const config = {
     SorteiosPage,
     SorteiosPendentesPage,
     SorteiosRealizadosPage,
-    SorteioModalPage
+    SorteioModalPage,
+    ModalLoginPage
   ],
   providers: [
-    {provide: ErrorHandler, useClass: IonicErrorHandler},
     FireService
   ]
 })

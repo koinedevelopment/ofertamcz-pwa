@@ -1,7 +1,8 @@
+import { ModalLoginPage } from './../pages/modal-login/modal-login';
 import { SorteiosPage } from './../pages/sorteios/sorteios';
 import { FireService } from './../services/fire.service';
 import { Component, ViewChild } from '@angular/core';
-import {App, IonicApp, MenuController, Platform, Events, NavController, NavParams, Modal, LoadingController } from 'ionic-angular';
+import { App, IonicApp, MenuController, Platform, Events, NavController, NavParams, Modal, LoadingController, ModalController } from 'ionic-angular';
 import { HomePage } from '../pages/home/home';
 import * as firebase from 'firebase';
 @Component({
@@ -15,41 +16,41 @@ export class MyApp {
   categorias;
   user; 
 
+
   public nav: any;
   constructor(
     platform: Platform, 
     public fireService: FireService, 
     public events: Events,
     public loadingCtrl: LoadingController,
-    private _app: App, 
-    private _ionicApp: IonicApp, 
-    private _menu: MenuController
+    public modalCtrl: ModalController,
+    public _app: App, 
+    public _ionicApp: IonicApp, 
+    public _menu: MenuController
     ) {
 
     platform.ready().then(() => {
-      this.setupBackButtonBehavior ();
+      this.setupBackButtonBehavior();
+
       firebase.auth().onAuthStateChanged(user => {
+        this.user = user;
+        /*console.log(user);
         if(user){
           let loading = this.loadingCtrl.create({
             content: 'Acessando conta...',
             showBackdrop: false
           });
-          loading.present()
+          loading.present();
+          console.log('User id: ', user.uid)
           this.fireService.getUserByUid(user.uid)
-            .then(snap => {
+            .then(userInfo => {
               loading.dismiss();
-              this.user = snap.val();
+              this.user = userInfo;
             })
 
-        }
+        }*/
       })
-
-      this.events.subscribe('user:registered', user => {
-        this.user = user;
-        console.log('this.user: ',this.user)
-      });
       
-    
 
     this.fireService.getCategorias()
       .subscribe(categorias => {
@@ -59,7 +60,14 @@ export class MyApp {
   }
 
   loginWithFacebook(){
-    this.fireService.loginWithFacebook();
+    this.fireService.loginWithFacebook()
+      .then(result => {
+        console.log(result);
+        if(result != 'logado'){
+          let modalSorteio = this.modalCtrl.create(ModalLoginPage, {credencial: result.credential, email: result.email});
+          modalSorteio.present();
+        }
+      })
   }
 
   logout(){

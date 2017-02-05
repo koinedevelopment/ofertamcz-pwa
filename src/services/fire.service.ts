@@ -12,13 +12,9 @@ declare var Connection: any;
 export class FireService {
     public uid: string = '';
     public auth$ = this.af.auth;
+    auth = firebase.auth();
     constructor(public af: AngularFire, public events: Events) {
-        firebase.auth().onAuthStateChanged(user => {
-            if(user){
-                this.uid = user.uid;
-                console.log('onAuthState ',user);
-            }
-        })
+        
     }
 
     saveCategoria(categoria: string): firebase.Promise<any> {
@@ -107,29 +103,75 @@ export class FireService {
 
     //AUTH
 
-    loginWithFacebook(){
-        this.auth$.login({
-            provider: AuthProviders.Facebook,
-            method: AuthMethods.Redirect
-            })
-            .then(userFacebook => {
-                console.log('User facebook: ', userFacebook)
-                let credential = firebase.auth.FacebookAuthProvider.credential(userFacebook.facebook.providerId);
-                firebase.auth().signInWithCredential(credential)
-                    .then(user => {
-                        console.log('Login with facebook', user);
-                        this.saveUserInfo(user, 'facebook')
+    loginWithFacebook(): firebase.Promise<any>{
+        console.log('Login with facebook')
+        return this.auth$.login({
+                provider: AuthProviders.Facebook,
+                method: AuthMethods.Popup
+                })
+                .then(userFacebook => {
+                    this.saveUserInfoCurrent();
+                    return Promise.resolve('logado');
+                })
+                /*.then(userFacebook => {
+                    console.log('User facebook: ', userFacebook)
+                    console.log('Access token: ', userFacebook.facebook['accessToken'])
+                    console.log('Facebook auth provider: ', firebase.auth.FacebookAuthProvider)
+                    console.log('Facebook auth provider_instance: ', firebase.auth.FacebookAuthProvider_Instance)
+                    
+                    let credential = firebase.auth.FacebookAuthProvider.credential(userFacebook.facebook['accessToken'])
+                    console.log(credential);
+                    firebase.auth().signInWithCredential(credential)
+                        .then(user => {
+                            console.log('Login with facebook', user);
+                            this.saveUserInfo(user, 'facebook')
+                                .then(_ => {
+                                    this.getUserByUid(user.uid)
+                                        .then(snap => {
+                                            return Promise.resolve('logado');
+                                        }) 
+                                })
+                        })
+                        .catch(err => {
+                            console.log(err)
+                        })
+                }) */
+                .catch(err => {
+                    console.log(err);
+                    if(err['code'] == "auth/email-already-in-use" || err['code'] == "auth/account-exists-with-different-credential")
+                        return Promise.resolve(err);
+                })
+                
+    }
+
+    loginWithPassword(email: string, password: string, credencial: any): firebase.Promise<any>{
+        return firebase.auth().signInWithEmailAndPassword(email, password)
+            .then(user => {
+                firebase.auth().currentUser.link(credencial)
+                    .then(result => {
+                        console.log(result);
+                        this.auth.currentUser.updateProfile({displayName: result.providerData[0].displayName, photoURL: result.providerData[0].photoURL})
                             .then(_ => {
-                                this.getUserByUid(user.uid)
-                                    .then(snap => {
-                                        //this.events.publish('user:registered', snap.val())
-                                    }) 
+                                console.log(this.auth.currentUser);
+                                this.saveUserInfoCurrent();
                             })
                     })
-                    .catch(err => {
-                        console.log(err)
-                    })
             })
+            .catch(err => {
+                console.log(err);
+                return err;
+            })
+    }
+
+    saveUserInfoCurrent():firebase.Promise<any>{
+        let user = this.auth.currentUser;
+        let obj_user = {
+                uid: user.uid,
+                nome: user.displayName,
+                imagem: user.photoURL,
+                email: user.email 
+            }
+        return firebase.database().ref('usuarios_app/'+user.uid).set(obj_user)
     }
 
     saveUserInfo(user:any, provider: string){
@@ -148,30 +190,13 @@ export class FireService {
                 email: user.email 
             }
         }
-
-        if(provider == 'google'){
-            obj_user = {
-                uid: uid,
-                nome: user.displayName,
-                imagem: user.imageUrl,
-                email: user.email 
-            }
-        }
+        console.log(obj_user);
         promise = new Promise((resolve, reject)=>{
-            firebase.database().ref('usuarios_app/'+uid).once('value')
+            firebase.database().ref('usuarios_app/'+uid).set(obj_user)
                 .then(snapshot => {
-                    console.log('snapshot verificação se há usuario cadastrado', snapshot.val());
-                    if(!snapshot.val()){
-                        firebase.database().ref('usuarios_app/'+uid).set(obj_user)
-                        .then(data => {
-                            resolve(true);
-                        })
-                    }
-                    if(snapshot.val()){
-                        //this.events.publish('user:registered', snapshot.val())
-                    }
+                    resolve(true);
                 })
-        })
+        });
         return promise;
     }
 
@@ -194,15 +219,35 @@ export class FireService {
         }
     }
 
-    getUserByUid(uid): firebase.Promise<any> {
-        return firebase.database().ref('usuarios_app/'+uid).once('value');
-    }
+/*    getUserByUid(uid): Promise<any> {
+        let promise = new Promise ((resolve, reject) => {
+            firebase.database().ref('usuarios_app/'+uid).once('value')
+                .then(snap => {
+                    if(snap.val()){
+                        resolve(snap.val())
+                    }
+                    else{
+                        this.saveUserInfo(firebase.auth().currentUser, 'facebook')
+                            .then(_ => {
+                                firebase.database().ref('usuarios_app/'+uid).once('value')
+                                    .then(snap => {
+                                        if(snap.val())
+                                            resolve(snap.val());
+                                    })
+                            })
+                    }
+                })
+        })
+        return promise;
+        
+                
+    } */
 
     getUserId():string{
         return firebase.auth().currentUser.uid;
     }
 
-    checkLogin(){
+   /* checkLogin(){
         let uid = firebase.auth().currentUser.uid;
         this.getUserByUid(uid)
             .then(snap => {
@@ -214,7 +259,7 @@ export class FireService {
                     console.log('Nao está logado');
                 }
             })
-    }
+    } */
     logout(){
         return firebase.auth().signOut();
     }
