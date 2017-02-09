@@ -1,22 +1,40 @@
+import { FireService } from './../../services/fire.service';
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
 
-/*
-  Generated class for the Contato page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
-*/
 @Component({
   selector: 'page-contato',
   templateUrl: 'contato.html'
 })
 export class ContatoPage {
-
-  constructor(public navCtrl: NavController, public navParams: NavParams) {}
+  email: string;
+  mensagem: string;
+  constructor(
+    public navCtrl: NavController, 
+    public navParams: NavParams,
+    public alertCtrl: AlertController,
+    public toastCtrl: ToastController,
+    public fireService: FireService) {
+      this.email = '';
+      this.mensagem = '';
+    }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ContatoPage');
+  }
+
+  enviar(){
+    this.fireService.sendMessage(this.email, this.mensagem)
+      .then(_ => {
+        let toast = this.toastCtrl.create({
+          message: 'Agradecemos o contato. Em breve retornaremos a mensagem.',
+          duration: 2500,
+          showCloseButton: true,
+          closeButtonText: 'X'
+        })
+        this.navCtrl.pop();
+        toast.present();
+      });
   }
 
 }

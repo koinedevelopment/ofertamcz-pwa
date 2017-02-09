@@ -101,6 +101,12 @@ export class FireService {
         })
     }
 
+    sendMessage(email: string, mensagem: string): firebase.Promise<any>{
+        return firebase.database().ref('contato').push({
+            mensagem: mensagem,
+            email: email
+        })
+    }
     //AUTH
 
     loginWithFacebook(): firebase.Promise<any>{

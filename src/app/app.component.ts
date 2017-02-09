@@ -27,7 +27,7 @@ export class MyApp {
     public modalCtrl: ModalController,
     public _app: App, 
     public _ionicApp: IonicApp, 
-    public _menu: MenuController
+    public menuCtrl: MenuController
     ) {
 
     platform.ready().then(() => {
@@ -91,8 +91,8 @@ export class MyApp {
       window.onpopstate = (evt) => {
 
         // Close menu if open
-        if (this._menu.isOpen()) {
-          this._menu.close ();
+        if (this.menuCtrl.isOpen()) {
+          this.menuCtrl.close ();
           return;
         }
 
@@ -122,6 +122,7 @@ export class MyApp {
   }
 
   goToContato(){
+    this.menuCtrl.toggle();
     this.nav.push(ContatoPage);
   }
 

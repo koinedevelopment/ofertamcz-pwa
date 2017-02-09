@@ -7,12 +7,28 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>contato</ion-title>
+    <ion-title>Contato</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
+<ion-content>
+  <ion-row>
+    <ion-col>
+      <ion-list>
+        <ion-item>
+          <ion-label>Email</ion-label>
+          <ion-input type="text" [(ngModel)]="email" ></ion-input>
+        </ion-item>
 
+        <ion-item class="mensagem">
+          <ion-label >Mensagem</ion-label>
+          <ion-textarea type="text" [(ngModel)]="mensagem"></ion-textarea>
+        </ion-item>
+      </ion-list>
+      <button ion-button full (click)="enviar()" >Enviar</button>
+    </ion-col>
+  </ion-row>
+  
 </ion-content>
