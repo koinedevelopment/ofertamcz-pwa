@@ -3,12 +3,15 @@
       <button ion-button menuToggle *ngIf="!showToolbar">
         <ion-icon name="menu"></ion-icon>
       </button>
-        <ion-title *ngIf="!showToolbar" >Meu Bairro</ion-title>
+        <ion-title *ngIf="!showToolbar" >Meu Biu</ion-title>
         <ion-searchbar #searchbar *ngIf="showToolbar"
           [(ngModel)]="myInput"
           [showCancelButton]="true"
           (ionInput)="filter($event)"
-          (ionCancel)="toggleSearchbar()">
+          (ionCancel)="toggleSearchbar()"
+          placeholder="Pesquisar"
+          cancelButtonText = "Cancelar"
+          >
         </ion-searchbar>
 
     <ion-buttons end *ngIf="!showToolbar">

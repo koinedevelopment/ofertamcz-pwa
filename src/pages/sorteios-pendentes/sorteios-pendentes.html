@@ -28,10 +28,16 @@
           Inscrever-se
         </button>
       </ion-col>
-      <ion-col text-right width-50>
+      <ion-col text-right width-50 hideWhen="ios" showWhen="android">
         <button style="font-size: 70%" (click)="goToEstabelecimento(sorteio.key_estabelecimento)" ion-button clear small color="danger" icon-left>
           <ion-icon name='arrow-round-forward'></ion-icon>
           Estabelecimento
+        </button>
+      </ion-col>
+      <ion-col text-right width-50 hideWhen="android" showWhen="ios">
+        <button (click)="goToEstabelecimento(sorteio.key_estabelecimento)" ion-button clear small color="danger" icon-left>
+          <ion-icon name='arrow-round-forward'></ion-icon>
+          Ir para Estabelecimento
         </button>
       </ion-col>
     </ion-row>

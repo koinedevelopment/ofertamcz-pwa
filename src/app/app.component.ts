@@ -1,3 +1,4 @@
+import { ContatoPage } from './../pages/contato/contato';
 import { ModalLoginPage } from './../pages/modal-login/modal-login';
 import { SorteiosPage } from './../pages/sorteios/sorteios';
 import { FireService } from './../services/fire.service';
@@ -60,14 +61,14 @@ export class MyApp {
   }
 
   loginWithFacebook(){
-    this.fireService.loginWithFacebook()
-      .then(result => {
-        console.log(result);
-        if(result != 'logado'){
-          let modalSorteio = this.modalCtrl.create(ModalLoginPage, {credencial: result.credential, email: result.email});
-          modalSorteio.present();
-        }
-      })
+      this.fireService.loginWithFacebook()
+        .then(result => {
+          console.log(result);
+          if(result != 'logado'){
+            let modalSorteio = this.modalCtrl.create(ModalLoginPage, {credencial: result.credential, email: result.email});
+            modalSorteio.present();
+          }
+        })
   }
 
   logout(){
@@ -118,6 +119,10 @@ export class MyApp {
 
     }
     
+  }
+
+  goToContato(){
+    this.nav.push(ContatoPage);
   }
 
 }
