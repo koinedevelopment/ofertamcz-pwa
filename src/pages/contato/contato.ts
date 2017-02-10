@@ -21,6 +21,7 @@ export class ContatoPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ContatoPage');
+    console.log(this.email.length)
   }
 
   enviar(){
